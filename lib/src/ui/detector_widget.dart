@@ -1,21 +1,28 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io' as io;
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
+import 'package:dio/dio.dart';
+import 'package:chaquopy/chaquopy.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_detector/src/bloc/cameras/cameras_bloc.dart';
-import 'package:flutter_detector/src/bloc/cropper/cropper_bloc.dart';
 import 'package:flutter_detector/src/bloc/detector/detector_bloc.dart';
 import 'package:flutter_detector/src/bloc/lifecycle/lifecycle_bloc.dart';
 import 'package:flutter_detector/src/detector.dart';
-import 'package:flutter_detector/src/ui/boxes_overlay.dart';
 import 'package:flutter_detector/src/ui/detector_component.dart';
+import 'package:http/http.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_detector/src/ui/cord_point.dart';
+import 'package:flutter_file_manager/flutter_file_manager.dart';
+
+List<Widget> listOfCordPointWidgets = [];
 
 class DetectorWidget extends StatefulWidget {
   @override
@@ -27,6 +34,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
   Queue<String> imageCache;
   String dirPath;
   Size imageSize;
+
 
   @override
   void initState() {
@@ -47,19 +55,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
             listenWhen: (_, state) => state is DetectedObjectsState && context.bloc<LifecycleBloc>().state.isActive,
             listener: (_, __) {
               startCapturing();
-              context.bloc<CropperBloc>().add(
-                    LastImageDataEvent(
-                      dirPath,
-                      imageCache.last,
-                      imageSize ?? controller.value.previewSize,
-                      context.bloc<DetectorBloc>().state.boxes,
-                    ),
-                  );
             },
-            child: BlocListener<CropperBloc, CropperState>(
-              listenWhen: (_, state) => state is CroppSuccessState,
-              listener: (_, state) =>
-                  showMessage('Objects cropped', '${(state as CroppSuccessState).crops.length} image(s) saved'),
               child: BlocBuilder<CamerasBloc, CamerasState>(
                 builder: (_, camState) {
                   if (camState is NoCamerasAvailableState) {
@@ -72,7 +68,6 @@ class _DetectorWidgetState extends State<DetectorWidget> {
               ),
             ),
           ),
-        ),
       );
 
   Widget get progressWidget => const Center(
@@ -82,6 +77,7 @@ class _DetectorWidgetState extends State<DetectorWidget> {
           child: CircularProgressIndicator(),
         ),
       );
+
 
   Widget get cameraContent {
     if (controller == null || !controller.value.isInitialized) {
@@ -97,33 +93,14 @@ class _DetectorWidgetState extends State<DetectorWidget> {
       final previewW = min(preview.height, preview.width);
       final screenRatio = screenH / screenW;
       final previewRatio = previewH / previewW;
+      final maxHeight = screenRatio > previewRatio ? screenH : screenW / previewW * previewH;
+      final maxWidth = screenRatio > previewRatio ? screenH / previewH * previewW : screenW;
 
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
-          OverflowBox(
-            maxHeight: screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
-            maxWidth: screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
-            child: CameraPreview(controller),
-          ),
-          BoxesOverlay(
-            previewH,
-            previewW,
-            screenH,
-            screenW,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FloatingActionButton(
-              onPressed: () => context.bloc<CropperBloc>().add(CroppImageEvent()),
-              backgroundColor: Colors.teal,
-              elevation: 3.0,
-              child: const Icon(
-                Icons.camera,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          CameraPreview(controller),
+          ...listOfCordPointWidgets,
         ],
       );
     }
@@ -184,8 +161,19 @@ class _DetectorWidgetState extends State<DetectorWidget> {
         try {
           // this is needed because of bug in camera plugin
           // https://github.com/flutter/flutter/issues/49420
-          imageSize ??= await Detector.getImageSize(filePath);
+          /*var response = saveFile1(filePath);
+          dynamic path = response['filePath'];
+          hello_world_python(path);*/
 
+          //imageSize ??= await Detector.getImageSize(filePath);
+          //var directory = await getExternalStorageDirectory();
+
+          createNoteWidgetsByFrame(filePath).then((List<Widget> result){
+            setState(() {
+              listOfCordPointWidgets = result;
+            });
+          });
+          //listOfCordPointWidgets = createCordPointsWidgetsByFrame(filePath);
           context.bloc<DetectorBloc>().add(DetectObjectsEvent(filePath));
         } catch (e) {
           print(e);
@@ -193,6 +181,8 @@ class _DetectorWidgetState extends State<DetectorWidget> {
       },
     );
   }
+
+
 
   Future<String> get fetchFrame async {
     if (!mounted || !controller.value.isInitialized || controller.value.isTakingPicture) {

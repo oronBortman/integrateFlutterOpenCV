@@ -24,25 +24,42 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 29
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
     lintOptions {
         disable 'InvalidPackage'
+        checkReleaseBuilds false // Add this
+        abortOnError false
     }
 
     defaultConfig {
         applicationId "com.raccoon.tflite.flutter_detector"
-        minSdkVersion 24
+        minSdkVersion 21 //oron
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+        python {
+            pip {
+                install "Pillow"
+                install "opencv-python"
+                install "matplotlib"
+                install "join"
+                //  specify any other package to install.
+            }
+        }
+
     }
 
     buildTypes {

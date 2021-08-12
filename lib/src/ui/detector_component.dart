@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_detector/src/bloc/cameras/cameras_bloc.dart';
-import 'package:flutter_detector/src/bloc/cropper/cropper_bloc.dart';
 import 'package:flutter_detector/src/bloc/detector/detector_bloc.dart';
 import 'package:flutter_detector/src/bloc/lifecycle/lifecycle_bloc.dart';
 import 'package:flutter_detector/src/bloc/permissions/permissions_bloc.dart';
@@ -65,7 +64,6 @@ class _VisorComponentState extends State<VisorComponent> {
                       ? MultiBlocProvider(
                           providers: [
                             BlocProvider<DetectorBloc>(create: (_) => DetectorBloc(detector)),
-                            BlocProvider<CropperBloc>(create: (_) => CropperBloc(detector)),
                           ],
                           child: DetectorWidget(),
                         )
