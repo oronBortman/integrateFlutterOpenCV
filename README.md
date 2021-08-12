@@ -5,7 +5,7 @@ The Application runs openCV on every frame and draw on the frame the notes of a 
 ## Flutter
 - Preview the camera
 - For every second:
-  1. Take frame
+  1. Take a frame
   2. Call Python script of image processing using chaquopy package of Flutter.
   3. Get from the script the coordinates of the notes of the chord in json format.
   4. Draw the coordinates on the revlant places on the preview of the camera.
