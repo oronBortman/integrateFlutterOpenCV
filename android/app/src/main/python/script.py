@@ -40,9 +40,7 @@ def mainTextCode(code):
     try:
         a = os.path.dirname(__file__)
         filename = os.path.join(a,"c.jpeg")
-        #print(os.path.dirname(os.path.realpath(__file__)))
         img = cv2.imread(filename)
-        #print("filename:" + filename)
         img_with_lines = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         cv2.imwrite(filename, img_with_lines)
 

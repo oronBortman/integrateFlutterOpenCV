@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io' as io;
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
-import 'package:dio/dio.dart';
-import 'package:chaquopy/chaquopy.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flushbar/flushbar.dart';
@@ -14,13 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_detector/src/bloc/cameras/cameras_bloc.dart';
 import 'package:flutter_detector/src/bloc/detector/detector_bloc.dart';
 import 'package:flutter_detector/src/bloc/lifecycle/lifecycle_bloc.dart';
-import 'package:flutter_detector/src/detector.dart';
 import 'package:flutter_detector/src/ui/detector_component.dart';
-import 'package:http/http.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_detector/src/ui/cord_point.dart';
-import 'package:flutter_file_manager/flutter_file_manager.dart';
 
 List<Widget> listOfCordPointWidgets = [];
 
@@ -159,21 +152,11 @@ class _DetectorWidgetState extends State<DetectorWidget> {
           return;
         }
         try {
-          // this is needed because of bug in camera plugin
-          // https://github.com/flutter/flutter/issues/49420
-          /*var response = saveFile1(filePath);
-          dynamic path = response['filePath'];
-          hello_world_python(path);*/
-
-          //imageSize ??= await Detector.getImageSize(filePath);
-          //var directory = await getExternalStorageDirectory();
-
           createNoteWidgetsByFrame(filePath).then((List<Widget> result){
             setState(() {
               listOfCordPointWidgets = result;
             });
           });
-          //listOfCordPointWidgets = createCordPointsWidgetsByFrame(filePath);
           context.bloc<DetectorBloc>().add(DetectObjectsEvent(filePath));
         } catch (e) {
           print(e);

@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:chaquopy/chaquopy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_detector/src/ui/constants.dart';
-import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 
 Widget createNoteWidget(Point point)
@@ -56,7 +55,6 @@ List<Point> convJsonToListOfNotesCoordinates(String listOfNotesInfoStr)
 Future<String> getPathToSaveFrame()
 async {
   String dirPath = await getApplicationDocumentsDirectory().then((Directory dir) => dir.path);
-  print("DIR!!: " + dirPath);
   List<String> folders = dirPath.split("/");
   String newPath="";
 
@@ -71,10 +69,7 @@ async {
     }
   }
   newPath += "/files/chaquopy/AssetFinder/app/c.jpeg";
-  print("CCCCC: " + newPath);
-
   return newPath;
-
 }
 
 Future<String> fetchNotesInfoByPathOfFrame(String framePath) async {
@@ -82,8 +77,6 @@ Future<String> fetchNotesInfoByPathOfFrame(String framePath) async {
   String path = await getPathToSaveFrame();
   File(framePath).copy(path);
   var outputMap = await Chaquopy.executeCode("script.py");
-  print("YYYYY");
-  print(outputMap['textOutputOrError'].toString());
   return outputMap['textOutputOrError'].toString();
 }
 
@@ -99,15 +92,11 @@ List<Widget> createNoteWidgetsByListOfPoints(List<Point> listOfNotesCoordinates)
 
 Future<List<Widget>> createNoteWidgetsByFrame(String framePath)
 async {
-  print("A1");
   final String listOfNotesInfoStr = await fetchNotesInfoByPathOfFrame(framePath);
-  print("A2");
   //bad:
   //{"notes_coordinates": [{"x": "11", "y": "9"}, {"x": "23", "y": "0"}, {"x": "27", "y": "42"}], "numOfNotes": "3"}
   //good
   //{"notes_coordinates": [{"x": "13", "y": "39"}, {"x": "19", "y": "38"}, {"x": "37", "y": "27"}], "numOfNotes": "3"}
-  //final String listOfNotesInfoStr = "{\"notes_coordinates\": [{\"x\": \"12\", \"y\": \"18\"}, {\"x\": \"47\", \"y\": \"29\"}, {\"x\": \"10\", \"y\": \"39\"}], \"numOfNotes\": \"3\"}";
   final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
-  print("A3");
   return createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
 }
