@@ -17,6 +17,7 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
   - Run image processing with openCV to identify the coordinates of a certain chord of the guitar in the frame
    return json in the following format:
  
+ 
      "notes_coordinates":[
       {
          "x":"1",
