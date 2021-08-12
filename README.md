@@ -37,7 +37,9 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
 }
 ``` 
 x = coordinate x of the note
+
 y = coordinate y of the note
+
 numOfNotes = The number of the notes in the chord
   
 
