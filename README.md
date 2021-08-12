@@ -15,28 +15,8 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
 'script.py':
   - Gets the frame from the local storage of the device
   - Run image processing with openCV to identify the coordinates of a certain chord of the guitar in the frame
-  - return json in the following format:
-  {
-   "notes_coordinates":[
-      {
-         "x":"coordinate",
-         "y":"coordinate"
-      },
-      {
-         "x":"coordinate",
-         "y":"coordinate"
-      },
-      {
-         "x":"coordinate",
-         "y":"coordinate"
-      }
-      ...
-   ],
-   "numOfNotes":"HowMuchNotesThereAre"
-  }
-  
-  for example:
-     
+   return json in the following format:
+ 
      "notes_coordinates":[
       {
          "x":"1",
