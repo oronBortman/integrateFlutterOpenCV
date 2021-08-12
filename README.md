@@ -36,7 +36,7 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
   }
   
   for example:
-  
+     
      "notes_coordinates":[
       {
          "x":"1",
@@ -50,9 +50,9 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
          "x":"50",
          "y":"10"
       }
-   ],
-   "numOfNotes":"3"
-  }
+    ],
+    "numOfNotes":"3"
+    
   
   
 
