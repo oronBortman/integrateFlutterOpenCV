@@ -40,6 +40,6 @@ x = coordinate x of the note
 
 y = coordinate y of the note
 
-numOfNotes = The number of the notes in the chord
+numOfNotes = The number of the notes of the chord
   
 
