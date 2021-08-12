@@ -18,6 +18,7 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
    return json in the following format:
  
  ```
+ {
      "notes_coordinates":[
       {
          "x":"1",
@@ -33,6 +34,10 @@ All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/m
       }
     ],
     "numOfNotes":"3"
+}
 ``` 
+x = coordinate x of the note
+y = coordinate y of the note
+numOfNotes = The number of the notes in the chord
   
 
