@@ -12,6 +12,7 @@ The Application runs openCV on every frame and draw on the frame the notes of a 
 
 ## OpenCV
 All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/main/python".
+
 'script.py':
   - Gets the frame from the local storage of the device
   - Run image processing with openCV to identify the coordinates of a certain chord of the guitar in the frame
