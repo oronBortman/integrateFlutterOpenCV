@@ -1,9 +1,58 @@
-# Flutter TFLite Detector application
+# Integration between Flutter and OpenCV
 
-Flutter application with possible way of TFLite models usage on heavy camera streams
+The Application runs openCV on every frame and draw on the frame the notes of a chord.
 
-## Nice stuff used
-- BLoC architecture - nice event driven pattern
-- TFLite with custom models
-- EXIF for proper image rotation
-- Camera - for image stream, but while it is really heavy for processing - frame picking approach used 
+## Flutter
+- Preview the camera
+- For every second:
+  1. Take frame
+  2. Call Python script of image processing using chaquopy package of Flutter.
+  3. Get from the script the coordinates of the notes of the chord in json format.
+  4. Draw the coordinates on the revlant places on the preview of the camera.
+
+## OpenCV
+All the related files of openCV are at "integrateFlutterOpenCV/android/app/src/main/python".
+'script.py':
+  - Gets the frame from the local storage of the device
+  - Run image processing with openCV to identify the coordinates of a certain chord of the guitar in the frame
+  - return json in the following format:
+  {
+   "notes_coordinates":[
+      {
+         "x":"coordinate",
+         "y":"coordinate"
+      },
+      {
+         "x":"coordinate",
+         "y":"coordinate"
+      },
+      {
+         "x":"coordinate",
+         "y":"coordinate"
+      }
+      ...
+   ],
+   "numOfNotes":"HowMuchNotesThereAre"
+  }
+  
+  for example:
+  
+     "notes_coordinates":[
+      {
+         "x":"1",
+         "y":"2"
+      },
+      {
+         "x":"20",
+         "y":"30"
+      },
+      {
+         "x":"50",
+         "y":"10"
+      }
+   ],
+   "numOfNotes":"3"
+  }
+  
+  
+
