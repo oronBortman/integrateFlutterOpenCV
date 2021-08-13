@@ -99,6 +99,11 @@ Widget createFailureWidget()
   );
 }
 
+String cleanStringForJson(String str)
+{
+  return str.replaceAll(RegExp(r'^.*?{"notes_coordinates"'), '{"notes_coordinates"');
+}
+
 Future<List<Widget>> createNoteWidgetsByFrame(String framePath)
 async {
   String listOfNotesInfoStr = await fetchNotesInfoByPathOfFrame(framePath);
@@ -110,13 +115,9 @@ async {
   }
   else
   {
-    listOfNotesInfoStr = listOfNotesInfoStr.replaceAll(RegExp(r'^.*?{"notes_coordinates"'), '{"notes_coordinates"');
-    //bad:
-      //{"notes_coordinates": [{"x": "11", "y": "9"}, {"x": "23", "y": "0"}, {"x": "27", "y": "42"}], "numOfNotes": "3"}
-      //good
-      //{"notes_coordinates": [{"x": "13", "y": "39"}, {"x": "19", "y": "38"}, {"x": "37", "y": "27"}], "numOfNotes": "3"}
-      final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
-      listOfWidgets = createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
+    listOfNotesInfoStr = cleanStringForJson(listOfNotesInfoStr);
+    final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
+    listOfWidgets = createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
   }
   return listOfWidgets;
 }
