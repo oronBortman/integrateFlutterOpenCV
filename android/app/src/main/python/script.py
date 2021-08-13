@@ -36,7 +36,7 @@ def getRandNum():
 
 #   This is the code to run Text functions...
 def mainTextCode(code):
-    var=2
+    succeed = True
     try:
         a = os.path.dirname(__file__)
         filename = os.path.join(a,"c.jpeg")
@@ -44,6 +44,9 @@ def mainTextCode(code):
         img_with_lines = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         cv2.imwrite(filename, img_with_lines)
 
+        '''
+        details of the coordinates of the notes
+        '''
         json_details = {
             "notes_coordinates": [
                 {"x": getRandNum(), "y": getRandNum()},
@@ -51,7 +54,7 @@ def mainTextCode(code):
                 {"x": getRandNum(), "y": getRandNum()},
             ],
             "numOfNotes": "3"}
-        var  = str(json_details).replace("'","\"")
+        json_details  = str(json_details).replace("'","\"")
 
         im = PIL.Image.open(filename, 'r')
         PIL.Image.Image.save(im, filename)
@@ -60,8 +63,9 @@ def mainTextCode(code):
         fret_lines = fret_detection(cropped)
         string_detection(cropped_neck_img=cropped, fret_lines=fret_lines)
         plt.savefig(filename)
+        succeed=True
     except:
         #print("failed")
-        b=2
-
-    print(var)
+        g=2 #dumb line for debugging - remove later
+    if succeed:
+        print(json_details)

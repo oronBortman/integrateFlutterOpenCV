@@ -90,13 +90,33 @@ List<Widget> createNoteWidgetsByListOfPoints(List<Point> listOfNotesCoordinates)
   return listOfWidgets;
 }
 
+Widget createFailureWidget()
+{
+  return RichText(
+    text: const TextSpan(
+      text: 'Failure to process image',
+    ),
+  );
+}
+
 Future<List<Widget>> createNoteWidgetsByFrame(String framePath)
 async {
-  final String listOfNotesInfoStr = await fetchNotesInfoByPathOfFrame(framePath);
-  //bad:
-  //{"notes_coordinates": [{"x": "11", "y": "9"}, {"x": "23", "y": "0"}, {"x": "27", "y": "42"}], "numOfNotes": "3"}
-  //good
-  //{"notes_coordinates": [{"x": "13", "y": "39"}, {"x": "19", "y": "38"}, {"x": "37", "y": "27"}], "numOfNotes": "3"}
-  final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
-  return createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
+  String listOfNotesInfoStr = await fetchNotesInfoByPathOfFrame(framePath);
+  print("string: " + listOfNotesInfoStr);
+  List<Widget> listOfWidgets = [];
+  if(listOfNotesInfoStr.contains(new RegExp(r'failed', caseSensitive: false)))
+  {
+      listOfWidgets.add(createFailureWidget());
+  }
+  else
+  {
+    listOfNotesInfoStr = listOfNotesInfoStr.replaceAll(RegExp(r'^.*?{"notes_coordinates"'), '{"notes_coordinates"');
+    //bad:
+      //{"notes_coordinates": [{"x": "11", "y": "9"}, {"x": "23", "y": "0"}, {"x": "27", "y": "42"}], "numOfNotes": "3"}
+      //good
+      //{"notes_coordinates": [{"x": "13", "y": "39"}, {"x": "19", "y": "38"}, {"x": "37", "y": "27"}], "numOfNotes": "3"}
+      final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
+      listOfWidgets = createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
+  }
+  return listOfWidgets;
 }
