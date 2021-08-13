@@ -107,17 +107,18 @@ String cleanStringForJson(String str)
 Future<List<Widget>> createNoteWidgetsByFrame(String framePath)
 async {
   String listOfNotesInfoStr = await fetchNotesInfoByPathOfFrame(framePath);
+  listOfNotesInfoStr = listOfNotesInfoStr.replaceAll("(\\t|\\r?\\n)+", " ");
   print("string: " + listOfNotesInfoStr);
   List<Widget> listOfWidgets = [];
   if(listOfNotesInfoStr.contains(new RegExp(r'failed', caseSensitive: false)))
   {
       listOfWidgets.add(createFailureWidget());
   }
-  else
-  {
+ // else TODO: Need to add after the image processing is ready
+ // {
     listOfNotesInfoStr = cleanStringForJson(listOfNotesInfoStr);
     final List<Point> listOfNotesCoordinates = convJsonToListOfNotesCoordinates(listOfNotesInfoStr);
     listOfWidgets = createNoteWidgetsByListOfPoints(listOfNotesCoordinates);
-  }
+ // }
   return listOfWidgets;
 }

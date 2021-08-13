@@ -65,7 +65,6 @@ def mainTextCode(code):
         plt.savefig(filename)
         succeed=True
     except:
-        #print("failed")
-        g=2 #dumb line for debugging - remove later
+        print("failed")
     if succeed:
         print(json_details)
